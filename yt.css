@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+body header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: red;
+}
+body header img {
+  height: 50px;
+  width: 50px;
+}
+body .container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  text-align: left;
+}
+body .container iframe {
+  width: 560px;
+  height: 0;
+}
+body .container .showIframe {
+  height: 350px;
+}/*# sourceMappingURL=yt.css.map */
