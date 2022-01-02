@@ -1,21 +1,29 @@
-const key = 'AIzaSyCPsEuL3dXsUNEvekOVIr4vu_ve6Qh_NZ0'
-const url = 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&key=' + key + '&q='
+const key = 'AIzaSyAVrCfmWWbHSzKX9ULiOpy8Pb_hhiIdaMA'
+const url = 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&key=' + key + '&q='
 
 const input = document.querySelector('input')
 const button = document.querySelector('button')
 const container = document.querySelector('.container')
 const iframe = document.querySelector('iframe')
-
+const closebutton=document.querySelector('.closebutton')
+const homepageimage=document.querySelector('.header-image')
 let request = new XMLHttpRequest();
 
 
 
 
 
+function closeIframe(){
 
+document.querySelector('iframe').classList.remove('showIframe')
+closebutton.classList.add('hideclosebutton')
+
+}
 
 
 function showVideo(videos) {
+    input.textContent=''
+    closebutton.classList.add('hideclosebutton')
     iframe.classList.remove('showIframe')
     input.value = ''
     const cardsDelete = document.querySelectorAll('.card')
@@ -24,27 +32,27 @@ function showVideo(videos) {
 
         const video = document.createElement('div')
         video.className = "card"
-        const title = document.createElement('h2')
+        const title = document.createElement('h3')
         const desc = document.createElement('p')
         const img = document.createElement('img')
 
 
         video.addEventListener('click', () => {
-
+closebutton.classList.remove('hideclosebutton')
             iframe.setAttribute('src', 'https://www.youtube.com/embed/' + e.id.videoId)
             iframe.classList.add('showIframe')
             window.scrollTo({ top: 0, behavior: 'smooth' })
         })
 
         title.textContent = e.snippet.title
-        desc.textContent = e.description
+        desc.textContent = e.snippet.description
         img.setAttribute('src', e.snippet.thumbnails.medium.url)
 
 
-
+        
+        video.appendChild(img)
         video.appendChild(title)
         video.appendChild(desc)
-        video.appendChild(img)
 
         container.appendChild(video)
 
@@ -67,4 +75,65 @@ function fetchData() {
 
 }
 
+function homepageVideos(){
+
+    request.open('GET', 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&key=' + key )
+    request.send()
+    request.onload = () => {
+
+        if (request.status >= 200 && request.status < 400) {
+            showVideo(JSON.parse(request.responseText))
+        }
+        else {
+            alert('Something went wrong!')
+        }
+    }
+
+
+}
+
+function makeList(suggestions){
+
+suggestions.items.map(e=>{
+
+let searchresult = document.createElement('li')
+searchresult.textContent=e.snippet.title
+document.querySelector('.searchresults').appendChild(searchresult)
+
+searchresult.addEventListener('click', input.textContent=e.snippet.title)
+
+
+
+
+})
+
+
+
+}
+
+
+function showSearchSuggestions(){
+    request.open('GET', 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&key=' + key + '&q=' + input.value)
+    request.send()
+    request.onload = () => {
+
+        if (request.status >= 200 && request.status < 400) {
+            makeList(JSON.parse(request.responseText))
+        }
+        else {
+            alert('Something went wrong!')
+        }
+    }
+
+
+
+
+
+}
+
+
 button.addEventListener('click', fetchData)
+closebutton.addEventListener('click', closeIframe)
+window.addEventListener('load', homepageVideos)
+homepageimage.addEventListener('click', homepageVideos)
+input.addEventListener('keyup', showSearchSuggestions)
