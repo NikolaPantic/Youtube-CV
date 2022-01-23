@@ -12,21 +12,24 @@ let request = new XMLHttpRequest();
 
 
 
-
 function closeIframe(){
 
 document.querySelector('iframe').classList.remove('showIframe')
 closebutton.classList.add('hideclosebutton')
+iframe.setAttribute('src', '')
 
 }
 
 
 function showVideo(videos) {
-    input.textContent=''
-    closebutton.classList.add('hideclosebutton')
-    iframe.classList.remove('showIframe')
-    input.value = ''
+    let deletesuggestions=document.querySelectorAll('li')
+    deletesuggestions.forEach(e=>e.remove())
     const cardsDelete = document.querySelectorAll('.card')
+    input.textContent=''
+    input.value = ''
+    closebutton.classList.add('hideclosebutton')
+    iframe.setAttribute('src', '')
+    iframe.classList.remove('showIframe')
     cardsDelete.forEach(e => e.remove())
     videos.items.map((e) => {
 
@@ -93,21 +96,34 @@ function homepageVideos(){
 }
 
 function makeList(suggestions){
-
-suggestions.items.map(e=>{
-
+let deletesuggestions=document.querySelectorAll('li')
+deletesuggestions.forEach(e=>e.remove())
 let searchresult = document.createElement('li')
+
+if(searchresult.textContent!==''&& searchresult.value!==''){
+suggestions.items.map(e=>{
 searchresult.textContent=e.snippet.title
 document.querySelector('.searchresults').appendChild(searchresult)
 
-searchresult.addEventListener('click', input.textContent=e.snippet.title)
+searchresult.addEventListener('click',()=> {
+    request.open('GET', 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&key=' + key + '&q=' + searchresult.textContent)
+    request.send()
+    request.onload = () => {
+
+        if (request.status >= 200 && request.status < 400) {
+            showVideo(JSON.parse(request.responseText))
+        }
+        else {
+            alert('Something went wrong!')
+        }
+    }})
 
 
 
 
 })
 
-
+}
 
 }
 
